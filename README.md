@@ -130,22 +130,23 @@ scheme-research-tool/
 Feel free to submit issues and enhancement requests.
 
 ## License
-This repository and its contents are strictly protected under copyright law. Unauthorized copying, distribution, modification, or use of any code, files, or materials contained within this repository is expressly prohibited without prior written consent from the owner.
+This repository and its contents are strictly protected under copyright law. Unauthorized copying, distribution, modification, or use of any code, files, or materials contained within this repository is expressly prohibited without prior written consent from the owner.  
 
-####Key Terms and Conditions:
-No License Granted:
-Unless explicitly stated, this repository is not licensed for public or private use. Any usage without the owner’s written permission constitutes copyright infringement.
+### Key Terms and Conditions  
 
-####Prohibited Actions:
+1. **No License Granted**  
+   Unless explicitly stated, this repository is not licensed for public or private use. Any usage without the owner’s written permission constitutes copyright infringement.  
 
-Forking or cloning this repository without authorization.
-Copying code, solutions, or files for personal or commercial use.
-Reusing or redistributing the content, in whole or part, without explicit permission.
-####Legal Consequences:
-Violators may face legal actions under applicable intellectual property laws, including but not limited to claims for damages, injunctions, and attorney fees.
+2. **Prohibited Actions**  
+   - Forking or cloning this repository without authorization.  
+   - Copying code, solutions, or files for personal or commercial use.  
+   - Reusing or redistributing the content, in whole or part, without explicit permission.  
 
-###Contact for Permissions:
-For inquiries or permission requests, please contact me directly via the email associated with this repository.
+3. **Legal Consequences**  
+   Violators may face legal actions under applicable intellectual property laws, including but not limited to claims for damages, injunctions, and attorney fees.  
+
+### Contact for Permissions  
+For inquiries or permission requests, please contact me directly via the email associated with this repository.  
 
 ---
 
