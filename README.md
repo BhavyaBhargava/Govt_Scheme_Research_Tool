@@ -1,62 +1,152 @@
-# Scheme Research Application
+# Scheme Research Tool
 
 ## Overview
+This project is a **Scheme Research Tool** designed to automate the analysis of government scheme information. The tool processes scheme-related articles and provides structured summaries covering four essential aspects: **Scheme Benefits**, **Scheme Application Process**, **Eligibility**, and **Required Documents**. It features an interactive querying system that allows users to ask specific questions about the schemes.
 
-This project is a **Scheme Research Tool** designed to simplify the extraction and presentation of information about government schemes. The tool processes scheme-related articles and provides users with concise summaries based on four essential criteria: **Scheme Benefits**, **Scheme Application Process**, **Eligibility**, and **Required Documents**. Additionally, it supports interactive querying of the article's content, offering users both answers and the source of information.
+## Key Features
 
-## Features
+### Content Processing
+* Direct URL input or bulk upload via text files
+* Robust content extraction using LangChain's UnstructuredURL Loader
+* Efficient text splitting with RecursiveCharacterTextSplitter
+* Error handling for failed URL processing
 
-- **Input Options**:  
-  - Load URLs or upload text files containing URLs to fetch article content.
+### Advanced Search and Retrieval
+* High-performance embedding generation using Sentence Transformers (all-mpnet-base-v2)
+* Efficient similarity search implementation using FAISS
+* Local storage of FAISS indexes for quick access
+* Retrieval Augmented Generation (RAG) for accurate responses
 
-- **Automated Content Processing**:  
-  - Utilize LangChain's UnstructuredURL Loader to parse and process content efficiently.  
-  - Split and structure text for enhanced usability.
+### Language Model Integration
+* Powered by Groq's LLaMA 3 (8B parameters)
+* Low-latency response generation
+* Context-aware question answering
+* Robust summarization capabilities
 
-- **Advanced Search and Retrieval**:  
-  - Generate embedding vectors using OpenAI's embeddings.  
-  - Implement similarity search using the FAISS library for rapid and accurate information retrieval.  
-  - Store and reuse FAISS indexes locally as a pickle file.
+### User Interface
+* Clean, intuitive web interface built with Streamlit
+* Real-time processing status updates
+* Organized presentation of scheme summaries
+* Interactive Q&A section with history tracking
 
-- **Interactive Query System**:  
-  - Input user questions and receive precise answers based on the article's content.  
-  - Provide the source URL and a brief summary along with the answer.
+## Technical Architecture
 
-- **Streamlined User Interface**:  
-  - Web application built with Streamlit for ease of use and accessibility.  
-  - Sidebar input for URL submission.  
-  - Intuitive buttons for processing and interacting with content.
+### Core Components
+1. **Document Processing**
+   * UnstructuredURLLoader for content extraction
+   * RecursiveCharacterTextSplitter for text chunking
+   * Optimal chunk size: 1000 with 200 overlap
 
-- **Persistent Data Storage**:  
-  - Save embeddings and FAISS indexes locally for quick future access.
+2. **Embedding System**
+   * Model: sentence-transformers/all-mpnet-base-v2
+   * Local processing without API dependencies
+   * Cost-effective and reliable performance
 
-## Technical Details
+3. **Vector Storage**
+   * FAISS implementation for similarity search
+   * Persistent storage through pickle serialization
+   * Efficient retrieval mechanisms
 
-- **Main Application**:  
-  - `main.py`: Streamlit application script managing the interface and backend processes.
+### Dependencies
+```
+streamlit
+langchain
+langchain-community
+faiss-cpu
+unstructured
+groq
+sentence-transformers
+langchain_groq
+langchain_huggingface
+```
 
-- **Dependencies**:  
-  - `requirements.txt`: Contains the list of Python libraries required for the project.
+## Installation and Setup
 
-- **Configuration**:  
-  - `.config`: Store OpenAI API keys securely.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd scheme-research-tool
+```
 
-- **FAISS Index File**:  
-  - `faiss_store_openai.pkl`: Save and load indexed embeddings.
+2. Install required packages:
+```bash
+pip install -r requirements.txt
+```
 
-## Solution Workflow
-
-1. Users input URLs or upload text files in the sidebar.  
-2. The system fetches and processes content from the URLs.  
-3. Text is split, embedding vectors are generated, and a FAISS index is built.  
-4. Users can interact by asking questions, and the system retrieves answers based on indexed content.
+3. Configure API keys:
+   * Create a `config.config` file in the root directory
+   * Add your Groq API key:
+```ini
+[api_keys]
+groq_api_key = your_api_key_here
+```
 
 ## Usage
 
-- Install the required dependencies from `requirements.txt`.  
-- Run `main.py` to launch the Streamlit web application.  
-- Submit scheme URLs and process them for structured summaries and interactive queries.  
+1. Start the application:
+```bash
+streamlit run main.py
+```
+
+2. Using the tool:
+   * Enter URLs directly in the sidebar text area or upload a text file containing URLs
+   * Click "Process URLs" to initiate content analysis
+   * View generated summaries in four structured sections
+   * Use the Q&A section to ask specific questions about the schemes
+
+## File Structure
+
+```
+scheme-research-tool/
+├── main.py              # Main Streamlit application
+├── requirements.txt     # Project dependencies
+├── config.config       # API key configuration
+└── faiss_store_Meta.pkl # Stored FAISS index
+```
+
+## Technical Advantages
+
+### Embedding Choice
+* Uses HuggingFace Sentence Transformers instead of OpenAI embeddings
+* Eliminates API costs and rate limits
+* Supports offline operation
+* Complete control over embedding process
+* Comparable performance to commercial alternatives
+
+### Vector Search
+* FAISS implementation for efficient similarity search
+* Scalable for large document collections
+* Optimized memory usage
+* Fast retrieval times
+
+## Error Handling
+
+* Robust URL processing error management
+* Clear user feedback for processing status
+* Graceful handling of API failures
+* Session state management for consistent user experience
+
+## Contributing
+Feel free to submit issues and enhancement requests.
+
+## License
+This repository and its contents are strictly protected under copyright law. Unauthorized copying, distribution, modification, or use of any code, files, or materials contained within this repository is expressly prohibited without prior written consent from the owner.
+
+####Key Terms and Conditions:
+No License Granted:
+Unless explicitly stated, this repository is not licensed for public or private use. Any usage without the owner’s written permission constitutes copyright infringement.
+
+####Prohibited Actions:
+
+Forking or cloning this repository without authorization.
+Copying code, solutions, or files for personal or commercial use.
+Reusing or redistributing the content, in whole or part, without explicit permission.
+####Legal Consequences:
+Violators may face legal actions under applicable intellectual property laws, including but not limited to claims for damages, injunctions, and attorney fees.
+
+###Contact for Permissions:
+For inquiries or permission requests, please contact me directly via the email associated with this repository.
 
 ---
 
-This tool bridges the gap between raw information and user understanding, ensuring efficient access to government scheme details.
+For more information or support, please [create an issue](link-to-issues) in this repository.
