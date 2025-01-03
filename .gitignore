@@ -1,1 +1,4 @@
 .venv
+.env
+faiss_store.pkl
+faiss_store_Meta.pkl
