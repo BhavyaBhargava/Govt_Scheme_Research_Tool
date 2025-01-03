@@ -1,13 +1,11 @@
 import configparser
 import streamlit as st
 import pickle
-import requests
-from bs4 import BeautifulSoup
-from langchain.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
 
 # Load configuration from .config file
@@ -23,59 +21,34 @@ def verify_api_key():
         st.error("Groq API key not found. Please set it in the `config.config` file under [api_keys].")
         st.stop()
 
-# Scrape content from a URL
-def scrape_url_content(url):
-    """
-    Fetches and parses content from a given URL.
-    
-    Args:
-        url (str): The URL to scrape.
-
-    Returns:
-        str: Cleaned text content from the webpage.
-    """
-    try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        # Remove script and style elements
-        for script in soup(["script", "style"]):
-            script.decompose()
-        # Extract the text content
-        text = ' '.join(soup.stripped_strings)
-        return text
-
-    except requests.exceptions.RequestException as e:
-        st.error(f"Failed to fetch content from {url}: {e}")
-        return None
-
 # Load URLs from a text file
 def load_urls_from_file(file):
     content = file.getvalue().decode()
     urls = [url.strip() for url in content.split('\n') if url.strip()]
     return urls
 
-# Process URLs by scraping and splitting their content
+# Process URLs using UnstructuredURLLoader
 def process_urls(urls):
-    all_texts = []
-    for url in urls:
-        with st.spinner(f"Scraping {url}..."):
-            content = scrape_url_content(url)
-            if content:
-                text_splitter = RecursiveCharacterTextSplitter(
-                    chunk_size=1000,
-                    chunk_overlap=200,
-                    length_function=len
-                )
-                texts = text_splitter.split_text(content)
-                all_texts.extend(texts)
-    return all_texts
+    try:
+        with st.spinner("Loading content from URLs..."):
+            loader = UnstructuredURLLoader(urls=urls)
+            documents = loader.load()
+            
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200,
+                length_function=len
+            )
+            texts = text_splitter.split_documents(documents)
+            return texts
+    except Exception as e:
+        st.error(f"Error processing URLs: {str(e)}")
+        return None
 
 # Create vector store for question-answering
 def create_vector_store(texts):
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
-    vector_store = FAISS.from_texts(texts, embeddings)
+    vector_store = FAISS.from_documents(texts, embeddings)
     
     with open("faiss_store_Meta.pkl", "wb") as f:
         pickle.dump(vector_store, f)
@@ -94,7 +67,6 @@ def generate_scheme_summary(vector_store):
     
     summaries = {}
     for aspect, question in summary_aspects.items():
-        # Create a retrieval chain for each aspect
         retrieval_chain = RetrievalQA.from_chain_type(
             llm=llm,
             chain_type="stuff",
@@ -102,7 +74,6 @@ def generate_scheme_summary(vector_store):
             return_source_documents=True
         )
         
-        # Get response based on the retrieved context
         response = retrieval_chain.invoke(question)
         summaries[aspect] = response["result"]
         
@@ -130,7 +101,7 @@ def main():
     # Main content
     if not st.session_state["summary_generated"]:
         st.title("Scheme Research Tool")
-        st.write("This tool scrapes content from URLs about government schemes, summarizes it into four sections, and allows you to ask questions.")
+        st.write("This tool extracts content from URLs about government schemes, summarizes it into four sections, and allows you to ask questions.")
 
     if process_button:
         urls = []
@@ -140,11 +111,13 @@ def main():
             urls.extend(load_urls_from_file(uploaded_file))
         
         if urls:
-            with st.spinner("Processing URLs..."):
-                texts = process_urls(urls)
-                if texts:
+            texts = process_urls(urls)
+            if texts:
+                with st.spinner("Creating vector store..."):
                     vector_store = create_vector_store(texts)
                     st.session_state.vector_store = vector_store
+                
+                with st.spinner("Generating summaries..."):
                     summaries = generate_scheme_summary(vector_store)
                     
                     st.session_state["summary_generated"] = True
