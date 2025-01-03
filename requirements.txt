@@ -2,14 +2,10 @@ streamlit
 langchain
 langchain-community
 faiss-cpu
-python-dotenv
-unstructured
-python-magic
-numpy
-pandas
-tiktoken
 beautifulsoup4
 requests
+numpy
 groq
 sentence-transformers
 langchain_groq
+langchain_huggingface
