@@ -1,4 +1,4 @@
-# Scheme Research Tool
+# SchemeWise - **Government Scheme Assistance Tool**
 
 ## Overview
 This project is a **Scheme Research Tool** designed to automate the analysis of government scheme information. The tool processes scheme-related articles and provides structured summaries covering four essential aspects: **Scheme Benefits**, **Scheme Application Process**, **Eligibility**, and **Required Documents**. It features an interactive querying system that allows users to ask specific questions about the schemes.
